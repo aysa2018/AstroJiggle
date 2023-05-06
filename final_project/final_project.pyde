@@ -64,9 +64,9 @@ class Puzzle():
         
 
     def display(self):
-        # duration = millis()-self.prevTime
-        # self.prevTime = millis()
-        # print(duration)
+        duration = millis()-self.prevTime
+        self.prevTime = millis()
+        print(duration)
         #load background image
         image(self.bg_img,0,0,self.w,self.h)
         
@@ -195,56 +195,8 @@ class Puzzle():
         for j in range(start,ending+1):
             a=loadImage(path + "/images/" + "candy"+str(0) + ".png")
             self.tiles[row][j].img=a
-            self.tiles[row][j].ind=0
-        
-       
-        
-        
-            
-                
-                
-                    
-    # def allSame(self,a, b, c, d=None, e=None):
-    #     if d == None and e == None:
-    #         if a.img == b.img and b.img == c.img:
-    #             return True
-    #         return False
-    #     if e == None:
-    #         if a.img == b.img and b.img == c.img and c.img== d.img:
-    #             return True
-    #         return False
-    #     if a.img == b.img and b.img == c.img and c.img == d.img and d.img == e.img:
-    #         return True
-    #     return False
-        
-    # def check_match(self):
-    #     global score
-    #     # 3 horizontal
-        
-    #     for r in range(NUM_ROWS - 1, -1, -1):
-    #         for c in range(NUM_COLS-2):
+            self.tiles[row][j].ind=0    
     
-    #             if self.allSame(self.tiles[r][c],self.tiles[r][c+1],self.tiles[r][c+2]):
-    #                 print(score)
-    #                 self.tiles[r][c] = None
-    #                 self.tiles[r][c+1] = None
-    #                 self.tiles[r][c+2] = None
-    #                 score+=100
-    #                 print("h",score)
-               
-        
-    #     # 3 vertical
-    #     for r in range(NUM_ROWS- 2 - 1, -1, -1):
-    #         for c in range(NUM_COLS):
-    #             if self.allSame(self.tiles[r][c], self.tiles[r+1][c], self.tiles[r+2][c]):
-    #                 self.tiles[r][c] = None
-    #                 self.tiles[r+1][c] = None
-    #                 self.tiles[r+2][c] = None
-    #                 score+=100
-    #                 print("v",score)
-                
-                
-                
 
 #create a Tile class for each tile of the self    
 class StopWatch:
