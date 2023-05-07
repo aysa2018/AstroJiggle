@@ -15,6 +15,7 @@ counter=0
 click_list=[]
 score=0
 run=True
+time=1000
 
 #create a Tile class for each tile of the self
 
@@ -49,6 +50,7 @@ class Puzzle():
         self.prevTime = millis()
         self.w=RESOL_WIDTH
         self.h=RESOL_HEIGHT
+        self.gameover=False
         self.tiles=[]
         self.bg_img=loadImage(path+"/images/BG.png")
         
@@ -76,7 +78,7 @@ class Puzzle():
             for j in range(self_START_Y,self_START_Y+self_HEIGHT):
                 if (i-self_START_X)%CELL_DIMENSION==0 and (j-self_START_Y)%CELL_DIMENSION==0:
                     stroke(180)
-                    fill(200,200,255,100)
+                    fill(255,255,255,100)
                     rect(i, j, CELL_DIMENSION, CELL_DIMENSION,10,10,10,10)
                     
         # display tiles of the table 
@@ -120,16 +122,17 @@ class Puzzle():
         start_col=c
         start_r=r
         end_r=r
+        global score
         
         for j in range(c+1,NUM_COLS):
-            # print("RIGHT SEARCH ",self.tiles[r][j].ind,self.tiles[r][c].ind)
+            print("RIGHT SEARCH ",self.tiles[r][j].ind,self.tiles[r][c].ind)
             if self.tiles[r][j].ind==self.tiles[r][c].ind:
                 right_counter+=1
             else:
                 break
             
         for j in range(c-1,-1,-1):
-            # print("LEFT SEARCH ",self.tiles[r][j].ind,self.tiles[r][c].ind)
+            print("LEFT SEARCH ",self.tiles[r][j].ind,self.tiles[r][c].ind)
             if self.tiles[r][j].ind==self.tiles[r][c].ind:
                 left_counter+=1
             else:
@@ -137,7 +140,7 @@ class Puzzle():
         
         # print("RIGHT CNT: ",right_counter,"LEFT CNT: ",left_counter)
         if (right_counter+left_counter+1)>=3:
-            # print("OHOHOHOHOHOHOHOHO")
+            print("OHOHOHOHOHOHOHOHO")
             h_indicator=True
             start_col=c-left_counter
             end_col=c+right_counter
@@ -164,8 +167,10 @@ class Puzzle():
             
         if  v_indicator:
             self.remove_v_tiles(start_r,end_r,c)
+            score=score+(end_r-start_r+1)*100
         if  h_indicator:
             self.remove_h_tiles(start_col,end_col,r)
+            score=score+(end_col-start_col+1)*100
         
         # print("TOP CNT: ",top_counter,"BOT CNT: ",bottom_counter)
              
@@ -177,55 +182,77 @@ class Puzzle():
             
             self.tiles[i][column].img=a
             self.tiles[i][column].ind=0
-            self.falling()
+            # self.falling()
             
     def remove_h_tiles(self,start,ending,row):
         for j in range(start,ending+1):
             a=loadImage(path + "/images/" + "candy"+str(0) + ".png")
             self.tiles[row][j].img=a
             self.tiles[row][j].ind=0 
-            self.falling()   
+            # self.falling()   
             
-    def falling(self):
-        global run
-        while run == True:
-            run = False
-        # 5. move X's down by 1 cell (repeat until all X's reach the bottom)
-        for r in range(NUM_ROWS - 2, 0, -1):
-            for c in range(NUM_COLS):
-                if self.tiles[r][c].ind != 0 and self.tiles[r+1][c].ind == 0:
-                    temp=self.tiles[r][c].ind
-                    self.tiles[r][c].ind = self.tiles[r-1][c].ind
-                    self.tiles[r+1][c].ind = temp
+    # def falling(self):
+    #     global run
+    #     while run == True:
+    #         run = False
+    #     # 5. move X's down by 1 cell (repeat until all X's reach the bottom)
+    #     for r in range(NUM_ROWS - 2, 0, -1):
+    #         for c in range(NUM_COLS):
+    #             if self.tiles[r][c].ind != 0 and self.tiles[r+1][c].ind == 0:
+    #                 temp=self.tiles[r][c].ind
+    #                 self.tiles[r][c].ind = self.tiles[r-1][c].ind
+    #                 self.tiles[r+1][c].ind = temp
                    
-        for c in range(NUM_COLS):
-            if self.tiles[0][c].ind==0:
-                self.tiles[0][c].ind=random.randint(1,6)
-        run = True
+    #     for c in range(NUM_COLS):
+    #         if self.tiles[0][c].ind==0:
+    #             self.tiles[0][c].ind=random.randint(1,6)
+    #     run = True
+    def check_game_over(self):
+        global time
+        if time==0:
+            self.gameover=True
+            
+            
+        
+    def display_gameover_screen(self):
+        bg_img=loadImage(path+"/images/BG.png")
+        image(bg_img,0,0,RESOL_WIDTH,RESOL_HEIGHT)
+        global score
+        textAlign(CENTER)
+        fill(255,0,0)
+        textSize(25)
+        text("GAMEOVER",RESOL_WIDTH//2,RESOL_HEIGHT//2-10)
+        textSize(15)
+        fill(0,0,0)
+        text("Your score: "+str(score),RESOL_WIDTH//2,RESOL_HEIGHT//2+20)
+        
+        
             
 #create a Tile class for each tile of the self    
 class StopWatch:
-    def __init__(self,time):
+    def __init__(self,t):
         self.x=100
         self.y=500
         self.w=200
         self.h=100
-        self.time=time
+        global time
+        time=t
 
     def display(self):
+        global time
         noStroke()
         fill(255,255,255)
         rect(self.x,self.y,self.w,self.h,50,50,50,50)
         if frameCount%10==0:
-            if self.time>=1:
-                self.time-=1
+            if time>=1:
+                time-=1
         textAlign(CENTER)
         fill(0)
         textSize(25)
-        if self.time>9:
-            text("00:"+str(self.time),200,560)
+        if time>9:
+            text("00:"+str(time),200,560)
         else:
-            text("00:0"+str(self.time),200,560)
+            text("00:0"+str(time),200,560)
  
 #create a Tile class for each tile of the self
            
@@ -262,7 +289,12 @@ def setup():
                        
 def draw():
     
-    puzzle.display()
+    puzzle.check_game_over()
+            
+    if not puzzle.gameover:
+        puzzle.display()
+    else:
+        puzzle.display_gameover_screen()
     
 
 def mousePressed():
