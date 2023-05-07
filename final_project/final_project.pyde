@@ -14,7 +14,7 @@ NUM_COLS=10
 counter=0
 click_list=[]
 score=0
-EMPTY=-1
+run=True
 
 #create a Tile class for each tile of the self
 
@@ -110,7 +110,6 @@ class Puzzle():
         
     def detect_streak(self,r,c):
    
-        
         top_counter=0
         bottom_counter=0
         left_counter=0
@@ -122,24 +121,19 @@ class Puzzle():
         start_r=r
         end_r=r
         
-            
         for j in range(c+1,NUM_COLS):
             # print("RIGHT SEARCH ",self.tiles[r][j].ind,self.tiles[r][c].ind)
             if self.tiles[r][j].ind==self.tiles[r][c].ind:
                 right_counter+=1
-                
             else:
                 break
             
-                
         for j in range(c-1,-1,-1):
             # print("LEFT SEARCH ",self.tiles[r][j].ind,self.tiles[r][c].ind)
             if self.tiles[r][j].ind==self.tiles[r][c].ind:
                 left_counter+=1
-                
             else:
                 break
-        
         
         # print("RIGHT CNT: ",right_counter,"LEFT CNT: ",left_counter)
         if (right_counter+left_counter+1)>=3:
@@ -148,21 +142,17 @@ class Puzzle():
             start_col=c-left_counter
             end_col=c+right_counter
         
-        
         for j in range(start_col,end_col+1):
-
             for i in range(r+1,NUM_ROWS):
                 # print("BOTTOM SEARCH ",self.tiles[i][j].ind,self.tiles[r][j].ind)
                 if self.tiles[i][j].ind==self.tiles[r][j].ind:
                     bottom_counter+=1
-                    
                 else:
                     break
             for i in range(r-1,-1,-1):
                 # print("TOP SEARCH ",self.tiles[i][j].ind,self.tiles[r][j].ind)
                 if self.tiles[i][j].ind==self.tiles[r][j].ind:
                     top_counter+=1
-                
                 else:
                     break
                 
@@ -172,13 +162,10 @@ class Puzzle():
                 start_r=r-top_counter
                 end_r=r+bottom_counter
             
-            
-            
         if  v_indicator:
             self.remove_v_tiles(start_r,end_r,c)
         if  h_indicator:
             self.remove_h_tiles(start_col,end_col,r)
-        
         
         # print("TOP CNT: ",top_counter,"BOT CNT: ",bottom_counter)
              
@@ -190,14 +177,32 @@ class Puzzle():
             
             self.tiles[i][column].img=a
             self.tiles[i][column].ind=0
+            self.falling()
             
     def remove_h_tiles(self,start,ending,row):
         for j in range(start,ending+1):
             a=loadImage(path + "/images/" + "candy"+str(0) + ".png")
             self.tiles[row][j].img=a
-            self.tiles[row][j].ind=0    
-    
-
+            self.tiles[row][j].ind=0 
+            self.falling()   
+            
+    def falling(self):
+        global run
+        while run == True:
+            run = False
+        # 5. move X's down by 1 cell (repeat until all X's reach the bottom)
+        for r in range(NUM_ROWS - 2, 0, -1):
+            for c in range(NUM_COLS):
+                if self.tiles[r][c].ind != 0 and self.tiles[r+1][c].ind == 0:
+                    temp=self.tiles[r][c].ind
+                    self.tiles[r][c].ind = self.tiles[r-1][c].ind
+                    self.tiles[r+1][c].ind = temp
+                   
+        for c in range(NUM_COLS):
+            if self.tiles[0][c].ind==0:
+                self.tiles[0][c].ind=random.randint(1,6)
+        run = True
+            
 #create a Tile class for each tile of the self    
 class StopWatch:
     def __init__(self,time):
