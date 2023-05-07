@@ -64,9 +64,9 @@ class Puzzle():
         
 
     def display(self):
-        duration = millis()-self.prevTime
-        self.prevTime = millis()
-        print(duration)
+        # duration = millis()-self.prevTime
+        # self.prevTime = millis()
+        # print(duration)
         #load background image
         image(self.bg_img,0,0,self.w,self.h)
         
@@ -124,7 +124,7 @@ class Puzzle():
         
             
         for j in range(c+1,NUM_COLS):
-            print("RIGHT SEARCH ",self.tiles[r][j].ind,self.tiles[r][c].ind)
+            # print("RIGHT SEARCH ",self.tiles[r][j].ind,self.tiles[r][c].ind)
             if self.tiles[r][j].ind==self.tiles[r][c].ind:
                 right_counter+=1
                 
@@ -133,7 +133,7 @@ class Puzzle():
             
                 
         for j in range(c-1,-1,-1):
-            print("LEFT SEARCH ",self.tiles[r][j].ind,self.tiles[r][c].ind)
+            # print("LEFT SEARCH ",self.tiles[r][j].ind,self.tiles[r][c].ind)
             if self.tiles[r][j].ind==self.tiles[r][c].ind:
                 left_counter+=1
                 
@@ -141,9 +141,9 @@ class Puzzle():
                 break
         
         
-        print("RIGHT CNT: ",right_counter,"LEFT CNT: ",left_counter)
+        # print("RIGHT CNT: ",right_counter,"LEFT CNT: ",left_counter)
         if (right_counter+left_counter+1)>=3:
-            print("OHOHOHOHOHOHOHOHO")
+            # print("OHOHOHOHOHOHOHOHO")
             h_indicator=True
             start_col=c-left_counter
             end_col=c+right_counter
@@ -152,14 +152,14 @@ class Puzzle():
         for j in range(start_col,end_col+1):
 
             for i in range(r+1,NUM_ROWS):
-                print("BOTTOM SEARCH ",self.tiles[i][j].ind,self.tiles[r][j].ind)
+                # print("BOTTOM SEARCH ",self.tiles[i][j].ind,self.tiles[r][j].ind)
                 if self.tiles[i][j].ind==self.tiles[r][j].ind:
                     bottom_counter+=1
                     
                 else:
                     break
             for i in range(r-1,-1,-1):
-                print("TOP SEARCH ",self.tiles[i][j].ind,self.tiles[r][j].ind)
+                # print("TOP SEARCH ",self.tiles[i][j].ind,self.tiles[r][j].ind)
                 if self.tiles[i][j].ind==self.tiles[r][j].ind:
                     top_counter+=1
                 
@@ -167,7 +167,7 @@ class Puzzle():
                     break
                 
             if (top_counter+bottom_counter+1)>=3:
-                print("HEHEHEHEHEHEH")
+                # print("HEHEHEHEHEHEH")
                 v_indicator=True
                 start_r=r-top_counter
                 end_r=r+bottom_counter
@@ -180,7 +180,7 @@ class Puzzle():
             self.remove_h_tiles(start_col,end_col,r)
         
         
-        print("TOP CNT: ",top_counter,"BOT CNT: ",bottom_counter)
+        # print("TOP CNT: ",top_counter,"BOT CNT: ",bottom_counter)
              
         return (v_indicator or h_indicator)
         
@@ -279,19 +279,18 @@ def mousePressed():
         if mouseX in range(self_START_X,self_START_X+self_WIDTH-1) and mouseY in range(self_START_Y,self_START_Y+self_HEIGHT-1):
 
             if (click_list[2]==click_list[0]+1 and click_list[3]==click_list[1]) or (click_list[2]==click_list[0]-1 and click_list[3]==click_list[1])or (click_list[2]==click_list[0] and click_list[3]==click_list[1]+1) or (click_list[2]==click_list[0] and click_list[3]==click_list[1]-1):
-                
-                puzzle.swap(click_list[0],click_list[1],click_list[2],click_list[3])
-                
-                # print("CHECKING IND: ",click_list[2],click_list[3])
-                # print(puzzle.detect_streak(click_list[2],click_list[3]))
-                # print(puzzle.detect_streak(click_list[2],click_list[3]))
-                
-                if not puzzle.detect_streak(click_list[0],click_list[1]) and not puzzle.detect_streak(click_list[2],click_list[3]):
+                if puzzle.tiles[click_list[0]][click_list[1]].ind!=0 and puzzle.tiles[click_list[2]][click_list[3]].ind!=0 and (puzzle.tiles[click_list[0]][click_list[1]].ind!=puzzle.tiles[click_list[2]][click_list[3]].ind):
                     puzzle.swap(click_list[0],click_list[1],click_list[2],click_list[3])
+                
+                    if not puzzle.detect_streak(click_list[0],click_list[1]) and not puzzle.detect_streak(click_list[2],click_list[3]):
+                        puzzle.swap(click_list[0],click_list[1],click_list[2],click_list[3])
                     
-                counter=0
-                click_list=[]
+                    counter=0
+                    click_list=[]
                 # puzzle.check_match()
+                else:
+                    counter=0
+                    click_list=[]
             else:
                 counter=1
                 a=click_list[0]
