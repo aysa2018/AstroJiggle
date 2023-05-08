@@ -28,20 +28,9 @@ class Tile:
         self.y=self.r*CELL_DIMENSION+self_START_Y
         self.ind = random.randint(1,6)
         self.img = loadImage(path + "/images/" + "candy"+str(self.ind) + ".png")
-    
     def display(self):
         image(self.img, self.c * CELL_DIMENSION+self_START_X, self.r * CELL_DIMENSION+self_START_Y,CELL_DIMENSION,CELL_DIMENSION)
     
-    
-    def is_clicked(self):
-        if mouseX >= self.x and mouseX <= self.x + CELL_DIMENSION and mouseY >= self.y and mouseY <= self.y + CELL_DIMENSION:
-            return True
-        else:
-            return False    
-        
- 
-
-        
 #create a list class for all the initial tiles of the table
     
 class Puzzle():
@@ -50,9 +39,12 @@ class Puzzle():
         self.prevTime = millis()
         self.w=RESOL_WIDTH
         self.h=RESOL_HEIGHT
+        self.gamestart=False
         self.gameover=False
         self.tiles=[]
         self.bg_img=loadImage(path+"/images/BG.png")
+        self.bg_img1=loadImage(path+"/images/BG1.png")
+
         
         #make the list of the tile
         
@@ -66,9 +58,9 @@ class Puzzle():
         
 
     def display(self):
-        # duration = millis()-self.prevTime
-        # self.prevTime = millis()
-        # print(duration)
+        duration = millis()-self.prevTime
+        self.prevTime = millis()
+        print(duration)
         #load background image
         image(self.bg_img,0,0,self.w,self.h)
         
@@ -125,42 +117,40 @@ class Puzzle():
         global score
         
         for j in range(c+1,NUM_COLS):
-            print("RIGHT SEARCH ",self.tiles[r][j].ind,self.tiles[r][c].ind)
             if self.tiles[r][j].ind==self.tiles[r][c].ind:
                 right_counter+=1
             else:
                 break
             
         for j in range(c-1,-1,-1):
-            print("LEFT SEARCH ",self.tiles[r][j].ind,self.tiles[r][c].ind)
             if self.tiles[r][j].ind==self.tiles[r][c].ind:
                 left_counter+=1
             else:
                 break
         
-        # print("RIGHT CNT: ",right_counter,"LEFT CNT: ",left_counter)
+    
         if (right_counter+left_counter+1)>=3:
-            print("OHOHOHOHOHOHOHOHO")
+            
             h_indicator=True
             start_col=c-left_counter
             end_col=c+right_counter
         
         for j in range(start_col,end_col+1):
             for i in range(r+1,NUM_ROWS):
-                # print("BOTTOM SEARCH ",self.tiles[i][j].ind,self.tiles[r][j].ind)
+                
                 if self.tiles[i][j].ind==self.tiles[r][j].ind:
                     bottom_counter+=1
                 else:
                     break
             for i in range(r-1,-1,-1):
-                # print("TOP SEARCH ",self.tiles[i][j].ind,self.tiles[r][j].ind)
+                
                 if self.tiles[i][j].ind==self.tiles[r][j].ind:
                     top_counter+=1
                 else:
                     break
                 
             if (top_counter+bottom_counter+1)>=3:
-                # print("HEHEHEHEHEHEH")
+                
                 v_indicator=True
                 start_r=r-top_counter
                 end_r=r+bottom_counter
@@ -172,7 +162,7 @@ class Puzzle():
             self.remove_h_tiles(start_col,end_col,r)
             score=score+(end_col-start_col+1)*100
         
-        # print("TOP CNT: ",top_counter,"BOT CNT: ",bottom_counter)
+        
              
         return (v_indicator or h_indicator)
         
@@ -182,31 +172,65 @@ class Puzzle():
             
             self.tiles[i][column].img=a
             self.tiles[i][column].ind=0
-            # self.falling()
+            # if frameCount % 10 == 0:
+            self.falling()
             
     def remove_h_tiles(self,start,ending,row):
         for j in range(start,ending+1):
             a=loadImage(path + "/images/" + "candy"+str(0) + ".png")
             self.tiles[row][j].img=a
             self.tiles[row][j].ind=0 
-            # self.falling()   
+            # if frameCount % 10 == 0:
+            self.falling()   
             
-    # def falling(self):
-    #     global run
-    #     while run == True:
-    #         run = False
-    #     # 5. move X's down by 1 cell (repeat until all X's reach the bottom)
-    #     for r in range(NUM_ROWS - 2, 0, -1):
-    #         for c in range(NUM_COLS):
-    #             if self.tiles[r][c].ind != 0 and self.tiles[r+1][c].ind == 0:
-    #                 temp=self.tiles[r][c].ind
-    #                 self.tiles[r][c].ind = self.tiles[r-1][c].ind
-    #                 self.tiles[r+1][c].ind = temp
+    def falling(self):
+        global run
+        while run == True:
+            run = False
+      
+        for r in range(NUM_ROWS - 2, 0, -1):
+            for c in range(NUM_COLS):
+                if self.tiles[r][c].ind != 0 and self.tiles[r+1][c].ind == 0:
+                    temp=self.tiles[r][c].ind
+                    self.tiles[r][c].ind = self.tiles[r-1][c].ind
+                    self.tiles[r+1][c].ind = temp
+                    temp=self.tiles[r][c].img
+                    self.tiles[r][c].img = self.tiles[r-1][c].img
+                    self.tiles[r+1][c].img = temp
                    
-    #     for c in range(NUM_COLS):
-    #         if self.tiles[0][c].ind==0:
-    #             self.tiles[0][c].ind=random.randint(1,6)
-    #     run = True
+        for c in range(NUM_COLS):
+            if self.tiles[0][c].ind==0:
+                self.tiles[0][c].ind=random.randint(1,6)
+        run = True
+        
+    def menu(self):
+        image(self.bg_img1,0,0,RESOL_WIDTH,RESOL_HEIGHT)
+        textAlign(CENTER)
+        fill(0,0,255)
+        textSize(45)
+        text("Enter your name here:_ _ _ _ ",RESOL_WIDTH//2-30,355)
+        
+        fill(0,0,255)
+        rect(590,420,195,50,50,50,50,50)
+        textAlign(CENTER)
+        fill(255,255,255)
+        textSize(25)
+        text("LEVELS",RESOL_WIDTH//2-30,455)
+        fill(0,0,255)
+        rect(590,520,195,50,50,50,50,50)
+        textSize(25)
+        fill(255,255,255)
+        text("CREDITS",RESOL_WIDTH//2-30,555)
+        fill(0,0,255)
+        rect(590,620,195,50,50,50,50,50)
+        textSize(25)
+        fill(255,255,255)
+        text("RULES",RESOL_WIDTH//2-30,655)
+        
+        
+    
+    
+    
     def check_game_over(self):
         global time
         if time==0:
@@ -286,56 +310,71 @@ puzzle=Puzzle()
 
 def setup():
     size(RESOL_WIDTH, RESOL_HEIGHT)
-                       
+    frameRate(10)
+                             
 def draw():
+    
+    puzzle.menu()
+    if puzzle.gamestart:
+        puzzle.display()
     
     puzzle.check_game_over()
             
-    if not puzzle.gameover:
-        puzzle.display()
-    else:
+    if  puzzle.gameover:
+        puzzle.gamestart=False
         puzzle.display_gameover_screen()
+        
+def keyPressed():
+    if key==ENTER:
+        puzzle.gamestart=True
     
 
 def mousePressed():
     global click_list
     global counter
-    counter+=1
-    # puzzle.check_match()
-    if mouseX in range(self_START_X,self_START_X+self_WIDTH-1) and mouseY in range(self_START_Y,self_START_Y+self_HEIGHT-1):
-        col=(mouseX-self_START_X)//CELL_DIMENSION
-        row=(mouseY-self_START_Y)//CELL_DIMENSION
-        # puzzle.swap(row,col)
-        click_list.append(row)
-        click_list.append(col) 
-        
-        
+    # print(puzzle.gamestart,puzzle.gameover)
+    # if not puzzle.gamestart and not puzzle.gameover:
+    #     if mouseX in range(590,590+195) and mouseY in range(195,195+50):
+    #         puzzle.gamestart=True
 
-    if counter==2:
-
+    
+    if puzzle.gamestart:
+        counter+=1
+        # puzzle.check_match()
         if mouseX in range(self_START_X,self_START_X+self_WIDTH-1) and mouseY in range(self_START_Y,self_START_Y+self_HEIGHT-1):
+            col=(mouseX-self_START_X)//CELL_DIMENSION
+            row=(mouseY-self_START_Y)//CELL_DIMENSION
+            # puzzle.swap(row,col)
+            click_list.append(row)
+            click_list.append(col) 
+        
+        
 
-            if (click_list[2]==click_list[0]+1 and click_list[3]==click_list[1]) or (click_list[2]==click_list[0]-1 and click_list[3]==click_list[1])or (click_list[2]==click_list[0] and click_list[3]==click_list[1]+1) or (click_list[2]==click_list[0] and click_list[3]==click_list[1]-1):
-                if puzzle.tiles[click_list[0]][click_list[1]].ind!=0 and puzzle.tiles[click_list[2]][click_list[3]].ind!=0 and (puzzle.tiles[click_list[0]][click_list[1]].ind!=puzzle.tiles[click_list[2]][click_list[3]].ind):
-                    puzzle.swap(click_list[0],click_list[1],click_list[2],click_list[3])
-                
-                    if not puzzle.detect_streak(click_list[0],click_list[1]) and not puzzle.detect_streak(click_list[2],click_list[3]):
+        if counter==2:
+    
+            if mouseX in range(self_START_X,self_START_X+self_WIDTH-1) and mouseY in range(self_START_Y,self_START_Y+self_HEIGHT-1):
+    
+                if (click_list[2]==click_list[0]+1 and click_list[3]==click_list[1]) or (click_list[2]==click_list[0]-1 and click_list[3]==click_list[1])or (click_list[2]==click_list[0] and click_list[3]==click_list[1]+1) or (click_list[2]==click_list[0] and click_list[3]==click_list[1]-1):
+                    if puzzle.tiles[click_list[0]][click_list[1]].ind!=0 and puzzle.tiles[click_list[2]][click_list[3]].ind!=0 and (puzzle.tiles[click_list[0]][click_list[1]].ind!=puzzle.tiles[click_list[2]][click_list[3]].ind):
                         puzzle.swap(click_list[0],click_list[1],click_list[2],click_list[3])
                     
-                    counter=0
-                    click_list=[]
-                # puzzle.check_match()
+                        if not puzzle.detect_streak(click_list[0],click_list[1]) and not puzzle.detect_streak(click_list[2],click_list[3]):
+                            puzzle.swap(click_list[0],click_list[1],click_list[2],click_list[3])
+                        
+                        counter=0
+                        click_list=[]
+                    # puzzle.check_match()
+                    else:
+                        counter=0
+                        click_list=[]
                 else:
-                    counter=0
+                    counter=1
+                    a=click_list[0]
+                    b=click_list[1]
                     click_list=[]
-            else:
-                counter=1
-                a=click_list[0]
-                b=click_list[1]
-                click_list=[]
-                click_list.append(a)
-                click_list.append(b)
-                
+                    click_list.append(a)
+                    click_list.append(b)
+                    
             
         
    
