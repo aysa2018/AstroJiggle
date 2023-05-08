@@ -30,6 +30,20 @@ class Tile:
         self.img = loadImage(path + "/images/" + "candy"+str(self.ind) + ".png")
     def display(self):
         image(self.img, self.c * CELL_DIMENSION+self_START_X, self.r * CELL_DIMENSION+self_START_Y,CELL_DIMENSION,CELL_DIMENSION)
+
+
+
+class EmptyTile():
+    def __init__(self, r, c):
+        self.r = r
+        self.c = c
+        self.x=self.c*CELL_DIMENSION+self_START_X
+        self.y=self.r*CELL_DIMENSION+self_START_Y
+        self.ind = 0
+        self.img = loadImage(path + "/images/" + "candy"+str(self.ind) + ".png")
+    def display(self):
+        image(self.img, self.c * CELL_DIMENSION+self_START_X, self.r * CELL_DIMENSION+self_START_Y,CELL_DIMENSION,CELL_DIMENSION)
+    
     
 #create a list class for all the initial tiles of the table
     
@@ -39,6 +53,7 @@ class Puzzle():
         self.prevTime = millis()
         self.w=RESOL_WIDTH
         self.h=RESOL_HEIGHT
+        self.levelpage=False
         self.gamestart=False
         self.gameover=False
         self.tiles=[]
@@ -58,9 +73,9 @@ class Puzzle():
         
 
     def display(self):
-        duration = millis()-self.prevTime
-        self.prevTime = millis()
-        print(duration)
+        # duration = millis()-self.prevTime
+        # self.prevTime = millis()
+        # print(duration)
         #load background image
         image(self.bg_img,0,0,self.w,self.h)
         
@@ -168,40 +183,36 @@ class Puzzle():
         
     def remove_v_tiles(self,start,ending,column):
         for i in range(start,ending+1):
-            a=loadImage(path + "/images/" + "candy"+str(0) + ".png")
-            
-            self.tiles[i][column].img=a
-            self.tiles[i][column].ind=0
+            self.tiles[i][column]=EmptyTile(i,column)
+
             # if frameCount % 10 == 0:
-            self.falling()
+            # self.falling()
             
     def remove_h_tiles(self,start,ending,row):
         for j in range(start,ending+1):
-            a=loadImage(path + "/images/" + "candy"+str(0) + ".png")
-            self.tiles[row][j].img=a
-            self.tiles[row][j].ind=0 
+            self.tiles[row][j]=EmptyTile(row,j)
             # if frameCount % 10 == 0:
-            self.falling()   
+            # self.falling()   
             
-    def falling(self):
-        global run
-        while run == True:
-            run = False
+    # def falling(self):
+    #     global run
+    #     while run == True:
+    #         run = False
       
-        for r in range(NUM_ROWS - 2, 0, -1):
-            for c in range(NUM_COLS):
-                if self.tiles[r][c].ind != 0 and self.tiles[r+1][c].ind == 0:
-                    temp=self.tiles[r][c].ind
-                    self.tiles[r][c].ind = self.tiles[r-1][c].ind
-                    self.tiles[r+1][c].ind = temp
-                    temp=self.tiles[r][c].img
-                    self.tiles[r][c].img = self.tiles[r-1][c].img
-                    self.tiles[r+1][c].img = temp
+    #     for r in range(NUM_ROWS - 2, 0, -1):
+    #         for c in range(NUM_COLS):
+    #             if self.tiles[r][c].ind != 0 and self.tiles[r+1][c].ind == 0:
+    #                 temp=self.tiles[r][c].ind
+    #                 self.tiles[r][c].ind = self.tiles[r-1][c].ind
+    #                 self.tiles[r+1][c].ind = temp
+    #                 temp=self.tiles[r][c].img
+    #                 self.tiles[r][c].img = self.tiles[r-1][c].img
+    #                 self.tiles[r+1][c].img = temp
                    
-        for c in range(NUM_COLS):
-            if self.tiles[0][c].ind==0:
-                self.tiles[0][c].ind=random.randint(1,6)
-        run = True
+    #     for c in range(NUM_COLS):
+    #         if self.tiles[0][c].ind==0:
+    #             self.tiles[0][c].ind=random.randint(1,6)
+    #     run = True
         
     def menu(self):
         image(self.bg_img1,0,0,RESOL_WIDTH,RESOL_HEIGHT)
@@ -215,18 +226,43 @@ class Puzzle():
         textAlign(CENTER)
         fill(255,255,255)
         textSize(25)
-        text("LEVELS",RESOL_WIDTH//2-30,455)
+        text("RULES",RESOL_WIDTH//2-30,455)
         fill(0,0,255)
         rect(590,520,195,50,50,50,50,50)
         textSize(25)
         fill(255,255,255)
-        text("CREDITS",RESOL_WIDTH//2-30,555)
+        text("LEADERBOARD",RESOL_WIDTH//2-30,555)
         fill(0,0,255)
         rect(590,620,195,50,50,50,50,50)
         textSize(25)
         fill(255,255,255)
-        text("RULES",RESOL_WIDTH//2-30,655)
+        text("CREDITS",RESOL_WIDTH//2-30,655)
         
+    def level(self):
+        image(self.bg_img1,0,0,RESOL_WIDTH,RESOL_HEIGHT)
+        textAlign(CENTER)
+        font=createFont("BobaCups.otf",22)
+        textFont(font,22)
+        fill(0,0,255)
+        textSize(22)
+        text("LEVELS",RESOL_WIDTH//2-30,355)
+        
+        fill(0,0,255)
+        rect(590,420,195,50,50,50,50,50)
+        textAlign(CENTER)
+        fill(255,255,255)
+        textSize(22)
+        text("EASY",RESOL_WIDTH//2-30,455)
+        fill(0,0,255)
+        rect(590,520,195,50,50,50,50,50)
+        textSize(22)
+        fill(255,255,255)
+        text("REGULAR",RESOL_WIDTH//2-30,555)
+        fill(0,0,255)
+        rect(590,620,195,50,50,50,50,50)
+        textSize(22)
+        fill(255,255,255)
+        text("ADVANCED",RESOL_WIDTH//2-30,655)
         
     
     
@@ -310,12 +346,17 @@ puzzle=Puzzle()
 
 def setup():
     size(RESOL_WIDTH, RESOL_HEIGHT)
-    frameRate(10)
+    
                              
 def draw():
     
-    puzzle.menu()
-    if puzzle.gamestart:
+    
+    if not puzzle.gamestart:
+        if not puzzle.levelpage:
+            puzzle.menu()
+        else:
+            puzzle.level()
+    else: 
         puzzle.display()
     
     puzzle.check_game_over()
@@ -323,20 +364,46 @@ def draw():
     if  puzzle.gameover:
         puzzle.gamestart=False
         puzzle.display_gameover_screen()
+    
         
 def keyPressed():
-    if key==ENTER:
-        puzzle.gamestart=True
+    global time
+    if puzzle.levelpage==False and key==ENTER:
+        puzzle.levelpage=True
+    # elif key==ENTER:
+    #     puzzle.gamestart=True
+        
+    if puzzle.levelpage==True:
+        if keyCode==UP:
+            time=40
+            puzzle.gamestart=True
+            puzzle.levelpage=False
+        elif keyCode==DOWN:
+            time=30
+            puzzle.gamestart=True
+            puzzle.levelpage=False
+        elif keyCode==RIGHT:
+            time=20
+            puzzle.gamestart=True
+            puzzle.levelpage=False
     
 
 def mousePressed():
     global click_list
     global counter
-    # print(puzzle.gamestart,puzzle.gameover)
-    # if not puzzle.gamestart and not puzzle.gameover:
-    #     if mouseX in range(590,590+195) and mouseY in range(195,195+50):
-    #         puzzle.gamestart=True
+    global time
+    
 
+    if puzzle.levelpage==True:
+    #     if mouseX in range(590,590+195) and mouseY in range(420,420+50):
+    #         time=40
+    #     elif mouseX in range(590,590+195) and mouseY in range(520,520+50):
+    #         time=30
+    #     elif mouseX in range(590,590+195) and mouseY in range(620,620+50):
+    #         time=20
+            
+        puzzle.gamestart=True
+        puzzle.levelpage=False
     
     if puzzle.gamestart:
         counter+=1
