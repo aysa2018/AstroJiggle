@@ -15,7 +15,7 @@ counter=0
 click_list=[]
 score=0
 run=True
-time=1000
+time0=1000
 easy=False
 advanced=True
 
@@ -32,6 +32,9 @@ class Tile:
         self.img = loadImage(path + "/images/" + "candy"+str(self.ind) + ".png")
     def display(self):
         image(self.img, self.c * CELL_DIMENSION+self_START_X, self.r * CELL_DIMENSION+self_START_Y,CELL_DIMENSION,CELL_DIMENSION)
+    def update(self,ind):
+        self.ind=ind
+        self.img = loadImage(path + "/images/" + "candy"+str(self.ind) + ".png")
 
 
 
@@ -45,6 +48,9 @@ class EmptyTile():
         self.img = loadImage(path + "/images/" + "candy"+str(self.ind) + ".png")
     def display(self):
         image(self.img, self.c * CELL_DIMENSION+self_START_X, self.r * CELL_DIMENSION+self_START_Y,CELL_DIMENSION,CELL_DIMENSION)
+    def update(self,ind):
+        self.ind=ind
+        self.img = loadImage(path + "/images/" + "candy"+str(self.ind) + ".png")
     
     
 #create a list class for all the initial tiles of the table
@@ -52,7 +58,7 @@ class EmptyTile():
 class Puzzle():
     
     def __init__(self):
-        self.prevTime = millis()
+        self.prevtime0 = millis()
         self.w=RESOL_WIDTH
         self.h=RESOL_HEIGHT
         self.levelpage=False
@@ -75,8 +81,8 @@ class Puzzle():
         
 
     def display(self):
-        # duration = millis()-self.prevTime
-        # self.prevTime = millis()
+        # duration = millis()-self.prevtime0
+        # self.prevtime0 = millis()
         # print(duration)
         #load background image
         image(self.bg_img,0,0,self.w,self.h)
@@ -184,22 +190,41 @@ class Puzzle():
         return (v_indicator or h_indicator)
         
     def remove_v_tiles(self,start,ending,column):
-        for i in range(start,ending+1):
+        for i in range(start,ending):
             self.tiles[i][column]=EmptyTile(i,column)
-
+            
             # if frameCount % 10 == 0:
-            # self.falling()
+            self.falling()
             
     def remove_h_tiles(self,start,ending,row):
         for j in range(start,ending+1):
             self.tiles[row][j]=EmptyTile(row,j)
-            # if frameCount % 10 == 0:
-            # self.falling()   
-            
-    # def falling(self):
-    #     global run
-    #     while run == True:
-    #         run = False
+           
+            self.falling()   
+    def check_empty(self,r,c):
+        if r==0:
+            return 0
+        if self.tiles[r][c].ind==0:
+            return self.check_empty(r-1,c)
+
+        else:
+            return r
+                
+    def falling(self):
+        global run
+        if run == True:
+            run = False
+    
+    
+        for i in range(NUM_ROWS-1,0,-1):
+            for j in range(NUM_COLS):
+                if self.tiles[i][j].ind==0:
+                    r=self.check_empty(i,j)
+                    time.sleep(.5)
+                    self.tiles[i][j].update(self.tiles[r][j].ind)
+                    self.tiles[r][j].update(0)
+                        
+                    run = True
       
     #     for r in range(NUM_ROWS - 2, 0, -1):
     #         for c in range(NUM_COLS):
@@ -262,12 +287,8 @@ class Puzzle():
         rect(590,520,195,50,50,50,50,50)
         textSize(22)
         fill(255,255,255)
-        text("REGULAR",RESOL_WIDTH//2-30,555)
-        fill(0,0,255)
-        rect(590,620,195,50,50,50,50,50)
-        textSize(22)
-        fill(255,255,255)
-        text("ADVANCED",RESOL_WIDTH//2-30,655)
+        text("ADVANCED",RESOL_WIDTH//2-30,555)
+        
         
     
                 
@@ -279,8 +300,8 @@ class Puzzle():
     
     
     def check_game_over(self):
-        global time
-        if time==0:
+        global time0
+        if time0==0:
             self.gameover=True
             
             
@@ -306,24 +327,24 @@ class StopWatch:
         self.y=500
         self.w=200
         self.h=100
-        global time
-        time=t
+        global time0
+        time0=t
 
     def display(self):
-        global time
+        global time0
         noStroke()
         fill(255,255,255)
         rect(self.x,self.y,self.w,self.h,50,50,50,50)
         if frameCount%10==0:
-            if time>=1:
-                time-=1
+            if time0>=1:
+                time0-=1
         textAlign(CENTER)
         fill(0)
         textSize(25)
-        if time>9:
-            text("00:"+str(time),200,560)
+        if time0>9:
+            text("00:"+str(time0),200,560)
         else:
-            text("00:0"+str(time),200,560)
+            text("00:0"+str(time0),200,560)
  
 #create a Tile class for each tile of the self
            
@@ -357,8 +378,8 @@ puzzle=Puzzle()
 
 def setup():
     size(RESOL_WIDTH, RESOL_HEIGHT)
-    
-                             
+ 
+                          
 def draw():
     
     
@@ -378,9 +399,21 @@ def draw():
     
         
 def keyPressed():
-    global time
+    global time0
     global easy
     global advanced
+    if puzzle.levelpage==True:
+        if keyCode==UP:
+            time0=40
+            puzzle.gamestart=True
+            puzzle.levelpage=False
+            easy=True
+        elif keyCode==DOWN:
+            time0=20
+            puzzle.gamestart=True
+            puzzle.levelpage=False
+            advanced=False
+        
     if puzzle.levelpage==False and key==ENTER:
         puzzle.levelpage=True
     
@@ -389,19 +422,19 @@ def keyPressed():
 def mousePressed():
     global click_list
     global counter
-    global time
+    global time0
     
 
-    if puzzle.levelpage==True:
-        if mouseX in range(590,590+195) and mouseY in range(420,420+50):
-            time=40
-        elif mouseX in range(590,590+195) and mouseY in range(520,520+50):
-            time=30
-        elif mouseX in range(590,590+195) and mouseY in range(620,620+50):
-            time=20
+    # if puzzle.levelpage==True:
+    #     if mouseX in range(590,590+195) and mouseY in range(420,420+50):
+    #         time0=40
+    #     elif mouseX in range(590,590+195) and mouseY in range(520,520+50):
+    #         time0=30
+    #     elif mouseX in range(590,590+195) and mouseY in range(620,620+50):
+    #         time0=20
             
-        puzzle.gamestart=True
-        puzzle.levelpage=False
+    #     puzzle.gamestart=True
+    #     puzzle.levelpage=False
     
     if puzzle.gamestart:
         counter+=1
