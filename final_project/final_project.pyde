@@ -16,6 +16,8 @@ click_list=[]
 score=0
 run=True
 time=1000
+easy=False
+advanced=True
 
 #create a Tile class for each tile of the self
 
@@ -213,6 +215,7 @@ class Puzzle():
     #         if self.tiles[0][c].ind==0:
     #             self.tiles[0][c].ind=random.randint(1,6)
     #     run = True
+    
         
     def menu(self):
         image(self.bg_img1,0,0,RESOL_WIDTH,RESOL_HEIGHT)
@@ -239,6 +242,8 @@ class Puzzle():
         text("CREDITS",RESOL_WIDTH//2-30,655)
         
     def level(self):
+        global easy
+        global advanced
         image(self.bg_img1,0,0,RESOL_WIDTH,RESOL_HEIGHT)
         textAlign(CENTER)
         font=createFont("BobaCups.otf",22)
@@ -263,6 +268,12 @@ class Puzzle():
         textSize(22)
         fill(255,255,255)
         text("ADVANCED",RESOL_WIDTH//2-30,655)
+        
+    
+                
+        
+            
+    
         
     
     
@@ -368,25 +379,12 @@ def draw():
         
 def keyPressed():
     global time
+    global easy
+    global advanced
     if puzzle.levelpage==False and key==ENTER:
         puzzle.levelpage=True
-    # elif key==ENTER:
-    #     puzzle.gamestart=True
-        
-    if puzzle.levelpage==True:
-        if keyCode==UP:
-            time=40
-            puzzle.gamestart=True
-            puzzle.levelpage=False
-        elif keyCode==DOWN:
-            time=30
-            puzzle.gamestart=True
-            puzzle.levelpage=False
-        elif keyCode==RIGHT:
-            time=20
-            puzzle.gamestart=True
-            puzzle.levelpage=False
     
+   
 
 def mousePressed():
     global click_list
@@ -395,12 +393,12 @@ def mousePressed():
     
 
     if puzzle.levelpage==True:
-    #     if mouseX in range(590,590+195) and mouseY in range(420,420+50):
-    #         time=40
-    #     elif mouseX in range(590,590+195) and mouseY in range(520,520+50):
-    #         time=30
-    #     elif mouseX in range(590,590+195) and mouseY in range(620,620+50):
-    #         time=20
+        if mouseX in range(590,590+195) and mouseY in range(420,420+50):
+            time=40
+        elif mouseX in range(590,590+195) and mouseY in range(520,520+50):
+            time=30
+        elif mouseX in range(590,590+195) and mouseY in range(620,620+50):
+            time=20
             
         puzzle.gamestart=True
         puzzle.levelpage=False
@@ -444,7 +442,7 @@ def mousePressed():
                     
             
         
-   
+
 
 
 
@@ -454,7 +452,7 @@ def mousePressed():
 
     
     
-  
+
         
 
     
