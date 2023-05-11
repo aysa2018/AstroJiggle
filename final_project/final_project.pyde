@@ -65,8 +65,10 @@ class Puzzle():
         self.gamestart=False
         self.gameover=False
         self.tiles=[]
-        self.bg_img=loadImage(path+"/images/BG.png")
-        self.bg_img1=loadImage(path+"/images/BG1.png")
+        self.bg_img=loadImage(path+"/images/bg_game.png")
+        self.bg_img1=loadImage(path+"/images/bg_menu.png")
+        self.bg_img2=loadImage(path+"/images/bg_gameover.png")
+        
 
         
         #make the list of the tile
@@ -220,26 +222,13 @@ class Puzzle():
             for j in range(NUM_COLS):
                 if self.tiles[i][j].ind==0:
                     r=self.check_empty(i,j)
-                    time.sleep(.5)
+                    # time.sleep(.5)
                     self.tiles[i][j].update(self.tiles[r][j].ind)
                     self.tiles[r][j].update(0)
                         
                     run = True
       
-    #     for r in range(NUM_ROWS - 2, 0, -1):
-    #         for c in range(NUM_COLS):
-    #             if self.tiles[r][c].ind != 0 and self.tiles[r+1][c].ind == 0:
-    #                 temp=self.tiles[r][c].ind
-    #                 self.tiles[r][c].ind = self.tiles[r-1][c].ind
-    #                 self.tiles[r+1][c].ind = temp
-    #                 temp=self.tiles[r][c].img
-    #                 self.tiles[r][c].img = self.tiles[r-1][c].img
-    #                 self.tiles[r+1][c].img = temp
-                   
-    #     for c in range(NUM_COLS):
-    #         if self.tiles[0][c].ind==0:
-    #             self.tiles[0][c].ind=random.randint(1,6)
-    #     run = True
+    
     
         
     def menu(self):
@@ -307,8 +296,8 @@ class Puzzle():
             
         
     def display_gameover_screen(self):
-        bg_img=loadImage(path+"/images/BG.png")
-        image(bg_img,0,0,RESOL_WIDTH,RESOL_HEIGHT)
+        
+        image(self.bg_img2,0,0,RESOL_WIDTH,RESOL_HEIGHT)
         global score
         textAlign(CENTER)
         fill(255,0,0)
