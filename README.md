@@ -16,31 +16,29 @@ AstroJiggle  is a tile matching game designed to provide stress relief and enter
 
 AstroJiggle  can be easily installed on your local machine by following these steps:
 
-1. Clone the repository: 
-2. Navigate to the project directory: 
-3. Install the required dependencies: (List any dependencies and how to install them, if applicable)
+1. Clone the repository 
+2. Install Processing (version 3.5.4)
+3. Open final_project.pyde in Processing and click the run button or press (Command+r) for macOS or (Ctrl+R) for windows
 
-## Usage
+## Files attached as tutorial
 
-To play AstroJiggle, follow these steps:
-
-1. Run the game executable: (Provide the command or instructions to launch the game)
-2. Start a new game or continue from a saved session.
-3. Match tiles of the same type to clear them from the board.
-4. Earn points and progress through levels.
-5. Enjoy the relaxing gameplay experience!
+The folder final_project contains different files and they are:
+1. final_project.pyde: Contains the source code of the projects
+2. images: Contains the images used as backgrounds and tile designs
+3. sounds: Contains the background sounds and sounds for special effects
+4. BobaCups.otf: Contains the font used in the game
 
 ## Examples
 
-Check out the gameplay video of AstroJiggle  [here](/path/to/video.mp4) for a visual demonstration of the game in action.
+Check out the gameplay video of AstroJiggle  [here](DEMO.MOV) for a visual demonstration of the game in action.
 
 ## Technologies/Frameworks
 
 AstroJiggle is built using the following technologies and frameworks:
 
-- Python
-- Processing 
-- Figma 
+- Python(programming language)
+- Processing (used for graphics of the designs using Python)
+- Figma(for UI/UX design)
 
 ## Contributing
 
@@ -51,8 +49,6 @@ Contributions to AstroJiggle are currently not accepted. However, feedback and s
 
 For any questions, feedback, or inquiries, please feel free to reach out to us:
 
-- Email: your-email@example.com
-- Twitter: [@your-twitter-handle](https://twitter.com/your-twitter-handle)
-- GitHub: [YourGitHubUsername](https://github.com/YourGitHubUsername)
+- Email: aysamuma2018@gmail.com
 
 We appreciate your interest in AstroJiggle and hope you enjoy playing the game!
